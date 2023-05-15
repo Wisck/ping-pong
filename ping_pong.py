@@ -10,6 +10,7 @@ class GameSprite(sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+
     
     def reset(self):
         win.blit(self.image, (self.rect.x, self.rect.y))
@@ -33,6 +34,7 @@ class Ball(GameSprite):
         super().__init__(sprite_image, x, y, w, h)
         self.dx = speed
         self.dy = speed
+        
 
     def update2(self):
         if self.rect.y < 0 or self.rect.y > height - self.rect.h:
@@ -42,23 +44,52 @@ class Ball(GameSprite):
     def player_collide(self, player):
         if sprite.collide_rect(self, player):
             self.dx *= -1
-
-coord = 0
+gol1 = 0
+gol2 = 0
 def status():
-    global coord
+    global gol1
+    global gol2
     if ball.rect.x <= 0:
-        coord = '2 win'
-    if ball.rect.x >= 650:
-        coord = '1 win'
+        if gol2 > 2:
+            ball1.dx -= 1
+            ball1.dy -= 1
 
-    if coord == '2 win':
+            ball1.rect.x = 325
+            ball1.rect.x = 325
+        ball.dx -= 1
+        ball.dy -= 1
+        ball.rect.x = 325
+        ball.rect.x = 325
+        gol2 += 1
+
+        
+    if ball.rect.x >= 650:
+        if gol1 > 2 :
+            ball1.dx += 1
+            ball1.dy += 1
+
+            ball1.rect.x = 325
+            ball1.rect.x = 325
+        ball.dx += 1
+        ball.dy += 1
+
+        ball.rect.x = 325
+        ball.rect.x = 325
+        gol1 += 1
+
+
+        
+
+
+    if gol2  == 5:
         finish = True
-        text_lox = font.render('2 Player win', 2, (255,0,0))
+        text_lox = font.render('2 Player win', 2, (0,255,0))
         win.blit(text_lox,(250,250))
-    if coord == '1 win':
+    if gol1 == 5:
         finish = True
         text_win = font.render('1 Player win', 2, (0,255,0))
         win.blit(text_win,(250,250))
+    
 
 width = 700
 height = 700
@@ -76,7 +107,7 @@ mixer.music.play()
 clock = time.Clock()
 platform_1 = Player('rocet.png', 10, height/2, 50, 100, 5, K_w, K_s)
 platform_2 = Player('rocet.png', 570, height/2, 50, 100, 5, K_UP, K_DOWN)
-ball = Ball('ball.png', width/2, height/4, 50, 50, 3)
+ball = Ball('ball.png', width/2, height/4, 50,50,3)
 
 while game:
     if finish != True:
@@ -88,10 +119,29 @@ while game:
         Player.update1(platform_1)
         Player.update1(platform_2)
         Ball.update2(ball)
+        status()
+        for i in range(1):
+            i = gol1
+            r = " " + str(i)
+            gole1 = r
+        for a in range(1):
+            a = gol2
+            b = " "+ str(a)
+            gole2 = b
+
+        if gol1 + gol2 == 3:
+            ball1 = Ball('ball.png', width/2, height/4, 50,50,3)
+        if gol1 + gol2 >= 3:
+            GameSprite.reset(ball1)
+            Ball.update2(ball1)
         ball.player_collide(platform_1)
         ball.player_collide(platform_2)
         display.update()
-        status()
+        
+        text_chet1 = font.render(gole2, 2, (0,255,0))
+        win.blit(text_chet1,(680,20))
+        text_chet2 = font.render(gole1, 2, (0,255,0))
+        win.blit(text_chet2,(20,20))
     display.update()
 
 
